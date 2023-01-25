@@ -1,0 +1,23 @@
+.App {
+  display: flex;
+
+  #canvas {
+    border: 1px solid lightgray;
+    margin: 2em;
+  }
+
+  .matrix {
+    display: flex;
+    flex-wrap: wrap;
+    max-height: 100px;
+    align-self: center;
+
+    input {
+      width: 40%;
+      height: 2em;
+      align-self: center;
+      margin-right: 2em;
+      margin-bottom: 2em;
+    }
+  }
+}
