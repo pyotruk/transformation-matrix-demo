@@ -1,6 +1,5 @@
 import React, {useEffect, useRef, useState} from "react";
 import "./App.scss";
-import {TransformationMatrix} from "../structures/geometry";
 import {Polygon} from "../structures/polygon";
 import {CANVAS_SIZE, IDENTITY_MATRIX, INITIAL_POLYGON} from "../structures/constants";
 
@@ -38,19 +37,40 @@ function App() {
     initCanvas();
   }, []);
 
-  const handleMatrixInput = () => {
+  const isNumeric = (val: string): boolean => {
+    return /^-?\d+(\.\d+)?$/.test(val);
+  };
+
+  const handleMatrixInput = (): void => {
+    let isInputsNumeric = true;
+    inputs.forEach((val: string): void => {
+      !isNumeric(val) && (isInputsNumeric = false);
+    });
+    if (!isInputsNumeric) {
+      return;
+    }
+
     drawPolygon(INITIAL_POLYGON.transform([
       [parseFloat(inputs[0]), parseFloat(inputs[1])],
       [parseFloat(inputs[2]), parseFloat(inputs[3])],
     ]), "blue");
   };
 
-  const setInput = (val: string, i: number) => {
+  const handleInput = (val: string, i: number): void => {
     setInputs((vals: string[]) => {
       const newInputs = [...vals];
       inputs[i] = val;
+      handleMatrixInput();
       return newInputs;
     });
+  };
+
+  const handleClear = (): void => {
+    if (!ctx.current || !canvas.current) {
+      return;
+    }
+    ctx.current.clearRect(0, 0, canvas.current.width, canvas.current.height);
+    drawPolygon(INITIAL_POLYGON, "red");
   };
 
   return (
@@ -58,9 +78,9 @@ function App() {
       <canvas id="canvas"></canvas>
       <div className="matrix">
         {inputs.map((val: string, i: number) => {
-          return <input key={i} type="text" value={inputs[i]} onChange={event => setInput(event.target.value, i)}/>;
+          return <input key={i} type="text" value={inputs[i]} onChange={event => handleInput(event.target.value, i)}/>;
         })}
-        <button onClick={handleMatrixInput}>draw</button>
+        <button onClick={handleClear}>clear</button>
       </div>
     </div>
   );
